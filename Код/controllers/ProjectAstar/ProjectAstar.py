@@ -6,7 +6,17 @@ from Other.Astar import AStarPlanner
 
 global show_animation
 show_animation = True
-
+def shortest_rotation(current_angle, target_angle):
+    # Нормализация углов к диапазону [0, 2*pi)
+    current_angle = current_angle % (2 * math.pi)
+    target_angle = target_angle % (2 * math.pi)
+    
+    diff = (target_angle - current_angle + 2 * math.pi) % (2 * math.pi)
+    
+    if diff <= math.pi:
+        return "A"
+    else:
+        return "H"
 # алгоритм брезенхэма
 def fill_matrix_between_points(matrix, i_start, j_start, i_end, j_end):
     # Проверка входных координат
@@ -610,10 +620,7 @@ class Robot_Controller(Supervisor):
                         #         order = 'H'
 
                         # else:
-                        if directions[counter]  > robot_theta * z:
-                            order = 'A'
-                        else:
-                            order = 'H'
+                        order = shortest_rotation(robot_theta * z , directions[counter])
             
                 
                     else:                
