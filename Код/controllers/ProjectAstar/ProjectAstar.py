@@ -19,21 +19,18 @@ def shortest_rotation(current_angle, target_angle):
         return "H"
 # алгоритм брезенхэма
 def fill_matrix_between_points(matrix, i_start, j_start, i_end, j_end):
-    # Проверка входных координат
     n = len(matrix)
     if not (0 <= i_start < n and 0 <= j_start < n):
         raise ValueError("Начальная точка вне границ матрицы")
     if not (0 <= i_end < n and 0 <= j_end < n):
         raise ValueError("Конечная точка вне границ матрицы")
     
-    # Инициализация переменных
     dx = abs(i_end - i_start)
     dy = abs(j_end - j_start)
     sx = 1 if i_start < i_end else -1
     sy = 1 if j_start < j_end else -1
     err = dx - dy
     
-    # Заполнение линии между точками
     while True:
         matrix[i_start][j_start] = -1
         
@@ -68,7 +65,6 @@ class Cell:
     value_func_g = 0
     value_func_f = 0
 
-    # CONSTRUCTOR
     def __init__(self, cx, cy, cxp, cyp, g, h, f):
         self.coord_x = cx
         self.coord_y = cy
@@ -102,13 +98,11 @@ class Robot_Controller(Supervisor):
         self.Box8 = self.getFromDef("BOX8")
         self.Goal = self.getFromDef("GOAL")
         self.motors = []
-        self.emitter.send("TEST")
         self.ArenaSize = self.Arena.getField("floorSize").getSFVec2f()
         self.CellSize = self.Arena.getField("floorTileSize").getSFVec2f() 
         self.CellSize[0], self.CellSize[1] = self.CellSize[0] / self.multiply, self.CellSize[1] / self.multiply 
         self.Cells_Per_Arena = int((self.ArenaSize[0] / self.CellSize[0]) * 2)
 
-        # print(self.Cells_Per_Arena)
         self.Grid = [[0] * self.Cells_Per_Arena for i in range(self.Cells_Per_Arena)]
         robot_x, robot_y, _ = self.robot.getField("translation").getSFVec3f()
         goal_x, goal_y, _ = self.Goal.getField("translation").getSFVec3f()
@@ -120,7 +114,6 @@ class Robot_Controller(Supervisor):
         self.Goal_cells = int(
             math.floor((goal_x * self.Cells_Per_Arena) + (self.Cells_Per_Arena / 2))
         ), int(math.floor((goal_y * self.Cells_Per_Arena) + (self.Cells_Per_Arena / 2)))
-        # print(self.Robot_cells, self.Goal_cells)
         box1_x, box1_y, _ = self.Box1.getField("translation").getSFVec3f()
         box2_x, box2_y, _ = self.Box2.getField("translation").getSFVec3f()
         box3_x, box3_y, _ = self.Box3.getField("translation").getSFVec3f()
@@ -145,7 +138,7 @@ class Robot_Controller(Supervisor):
         _,_, z6, box6_theta = self.Box6.getField("rotation").getSFRotation()
         _,_, z7, box7_theta = self.Box7.getField("rotation").getSFRotation()
         _,_, z8, box8_theta = self.Box8.getField("rotation").getSFRotation()
-        # print(box6_theta)
+
         box1_theta, box2_theta, box3_theta, box4_theta, box5_theta, box6_theta, box7_theta, box8_theta = box1_theta*z1, box2_theta*z2, box3_theta*z3, box4_theta*z4, box5_theta*z5, box6_theta*z6, box7_theta*z7, box8_theta*z8
         # up left, up, right, bottom left, bottom right
         box1_x_corner = [
@@ -253,7 +246,6 @@ class Robot_Controller(Supervisor):
                 x[i] = x_rotated + center_x
                 y[i] = y_rotated + center_y
 
-        # print(box6_x_corner, box6_y_corner)
         rotate(box1_x_corner, box1_y_corner, box1_theta, self.num_of_boxes, box1_x, box1_y)
         rotate(box2_x_corner, box2_y_corner, box2_theta, self.num_of_boxes, box2_x, box2_y)
         rotate(box3_x_corner, box3_y_corner, box3_theta, self.num_of_boxes, box3_x, box3_y)
@@ -262,7 +254,6 @@ class Robot_Controller(Supervisor):
         rotate(box6_x_corner, box6_y_corner, box6_theta, self.num_of_boxes, box6_x, box6_y)
         rotate(box7_x_corner, box7_y_corner, box7_theta, self.num_of_boxes, box7_x, box7_y)
         rotate(box8_x_corner, box8_y_corner, box8_theta, self.num_of_boxes, box8_x, box8_y)
-        # print(box6_x_corner, box6_y_corner)
         Boxes_x = []
         Boxes_y = []
         for i in range(0, self.num_of_boxes):
@@ -341,17 +332,8 @@ class Robot_Controller(Supervisor):
                 if self.Grid[row][col] == -1:
                     Boxes_x.append(row)
                     Boxes_y.append(col)
+        
         # str1 = ""
-        # for row in self.Grid:
-        #     str1 += " ".join("{:>3}".format(str(elem)) for elem in row) + "\n"
-        # # print(str1,'\n\n\n\n')
-        # # print(Boxes_x)
-        # # print(Boxes_y)
-        # # print(len(Boxes_x))
-        # # print(len(Boxes_y))
-        # str1 = ""
-        # # print(str1,'\n\n\n\n')
-
         # for row in self.Grid:
         #     str1 += " ".join("{:>3}".format(str(elem)) for elem in row) + "\n"
 
@@ -383,7 +365,7 @@ class Robot_Controller(Supervisor):
             robot_radius = self.multiply * grid_size
             a_star = AStarPlanner(ox, oy, grid_size, robot_radius)
             
-            if show_animation:  # pragma: no cover
+            if show_animation:  
                 plt.plot(ox, oy, ".k")
                 plt.plot(sx, sy, "og")
                 plt.plot(gx, gy, "xb")
@@ -399,22 +381,10 @@ class Robot_Controller(Supervisor):
                 trajectory.append(math.ceil(rx[index]))
                 trajectory.append(math.ceil(ry[index]))
 
-            if show_animation:  # pragma: no cover
+            if show_animation: 
                 plt.plot(rx, ry, "-r")
                 plt.pause(0.001)
                 plt.show()
-
-            
-            # trajectory = self.Astar(
-            #     self.Grid,
-            #     self.Cells_Per_Arena,
-            #     Boxes_x,
-            #     Boxes_y,
-            #     self.Robot_cells[0],
-            #     self.Robot_cells[1],
-            #     self.Goal_cells[0],
-            #     self.Goal_cells[1],
-            # )
 
         elif self.algorithm == "RRT":
             obstacle_list = []
@@ -439,7 +409,7 @@ class Robot_Controller(Supervisor):
                 rrt.draw_graph()
                 plt.plot([x for (x, y) in path], [y for (x, y) in path], '-r')
                 plt.grid(True)
-                plt.pause(0.01)  # Need for Mac
+                plt.pause(0.01)  
                 plt.show()
             path.reverse()
 
@@ -449,7 +419,6 @@ class Robot_Controller(Supervisor):
                 trajectory.append(math.ceil(path[index][0]))
                 trajectory.append(math.ceil(path[index][1]))
                 
-        # print(trajectory)
         trajectory_x = [self.Robot_cells[0]]
         trajectory_y = [self.Robot_cells[1]]
         for i in range(len(trajectory)):
@@ -457,20 +426,11 @@ class Robot_Controller(Supervisor):
                 trajectory_x.append(trajectory[i])
             else:
                 trajectory_y.append(trajectory[i])
-        # for i, k in zip(trajectory_x, trajectory_y):
-        #     # print(i, k)
+
         coords_x = []
         coords_y = []
-        # print(str1,'\n\n\n\n')
         
-    
-        # for i,j in zip(trajectory_x, trajectory_y):
-        #     path[i][j] = 'P'
-        # # print(self.Goal_cells[0], self.Goal_cells[1])
-        # str1 = "X ⬇  y ➡\n"
-        # for row in path:
-        #     str1 += " ".join("{:>3}".format(str(elem)) for elem in row) + "\n"
-        # # print(str1)
+
         for i in range(len(trajectory_x)):
             desired_x = (
                 (trajectory_x[i] - float(self.Cells_Per_Arena / 2))
@@ -483,9 +443,6 @@ class Robot_Controller(Supervisor):
             coords_x.append(desired_x)
             coords_y.append(desired_y)
 
-        # print(len(coords_x), len(coords_y))
-        # print(len(trajectory_x), len(trajectory_y))
-        
 
         directions = []
 
@@ -493,39 +450,7 @@ class Robot_Controller(Supervisor):
             dot1 = (trajectory_x[i], trajectory_y[i])
             dot2 = (trajectory_x[i+1], trajectory_y[i+1])
             angle = math.atan2(dot2[1]-dot1[1], dot2[0]-dot1[0])
-            # if (trajectory_x[i + 1] == trajectory_x[i]) and (
-            #     trajectory_y[i + 1] > trajectory_y[i]
-            # ):
-
-            #     directions.append(1.5708)
-            # elif (trajectory_x[i + 1] == trajectory_x[i]) and (
-            #     trajectory_y[i + 1] < trajectory_y[i]
-            # ):
-            #     directions.append(-1.5708)
-            # elif (trajectory_x[i + 1] > trajectory_x[i]) and (
-            #     trajectory_y[i + 1] == trajectory_y[i]
-            # ):
-            #     directions.append(0)
-            # elif (trajectory_x[i + 1] < trajectory_x[i]) and (
-            #     trajectory_y[i + 1] == trajectory_y[i]
-            # ):
-            #     directions.append(3.14159)
-            # elif (trajectory_x[i + 1] > trajectory_x[i]) and (
-            #     trajectory_y[i + 1] > trajectory_y[i]
-            # ):
-            #     directions.append(angle)
-            # elif (trajectory_x[i + 1] < trajectory_x[i]) and (
-            #     trajectory_y[i + 1] > trajectory_y[i]
-            # ):
-            #     directions.append(angle)
-            # elif (trajectory_x[i + 1] > trajectory_x[i]) and (
-            #     trajectory_y[i + 1] < trajectory_y[i]
-            # ):
-            #     directions.append(angle)
-            # elif (trajectory_x[i + 1] < trajectory_x[i]) and (
-            #     trajectory_y[i + 1] < trajectory_y[i]
-            # ):
-            #     directions.append(angle)
+    
             directions.append(angle)
             
         for i,k,l,b,x in zip(coords_x,coords_y, trajectory_x, trajectory_y, directions):
@@ -533,25 +458,22 @@ class Robot_Controller(Supervisor):
 
         counter = 0
         want_turn = False
-        # print(len(coords_x))
         while True:
             if self.step(64) == -1:
                     break  
-            # # print(coords_x[counter], coords_y[counter])
+            
 
             if counter < len(coords_x):      
             
                 robot_pos_x, robot_pos_y, _ = self.robot.getField('translation').getSFVec3f()
                 _, _, z, robot_theta = self.robot.getField('rotation').getSFRotation()                   
-                print('1', (math.sqrt(pow(robot_pos_x - coords_x[counter], 2))))
-                print('2', (math.sqrt(pow(robot_pos_y - coords_y[counter], 2))))
+                
                 if math.sqrt(pow(robot_pos_x - goal_x, 2) + pow(robot_pos_y - goal_y, 2)) < 0.065:
                     self.emitter.send("S")
                     print("DONE | Distance to goal: ", math.sqrt(pow(robot_pos_x - goal_x, 2) + pow(robot_pos_y - goal_y, 2)))
                     break
                 if (want_turn == False):    
-                    # print(math.sqrt(pow(robot_pos_y - coords_y[counter], 2)))
-                    # print(math.sqrt(pow(robot_pos_x - coords_x[counter], 2)))
+              
                     if (math.sqrt(pow(robot_pos_x - coords_x[counter], 2)) < 0.008) and \
                         (math.sqrt(pow(robot_pos_y - coords_y[counter], 2)) < 0.008):  
                         # print('1')    
@@ -571,43 +493,7 @@ class Robot_Controller(Supervisor):
                     # print(abs(robot_theta * z - directions[counter]))
                     if abs(robot_theta * z - directions[counter]) > 0.05:
 
-                        # if directions[counter] * z == 1.5708:
-                        #     if robot_theta < 0: 
-                        #         if abs(robot_theta) >  1.57:
-                        #             order = 'H'
-                        #         else:
-                        #             order = 'A'
-                        #     elif robot_theta > 0:
-                        #         if directions[counter] * z < robot_theta:
-                        #             order = 'H'
-                        #         else:
-                        #             order = 'A'
-                                    
-                        # elif directions[counter] * z == -1.5708:
-                        #     if robot_theta > 0:
-                        #         if abs(robot_theta) >  1.57:
-                        #             order = 'A'
-                        #         else:
-                        #             order = 'H'
-                        #     elif robot_theta < 0:
-                        #         if directions[counter] * z > robot_theta:
-                        #             order = 'H'
-                        #         else:
-                        #             order = 'A'
-                        
-                        # elif directions[counter] * z == 3.14159:
-                        #     if robot_theta > 0:
-                        #         order = 'A'
-                        #     else:
-                        #         order = 'H'
-                        
-                        # elif directions[counter] * z== 0:
-                        #     if robot_theta < 0:
-                        #         order = 'A'
-                        #     else:
-                        #         order = 'H'
-
-                        # else:
+       
                         order = shortest_rotation(robot_theta * z , directions[counter])
             
                 
