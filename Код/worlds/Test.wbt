@@ -67,7 +67,7 @@ DEF BOX8 CardboardBox {
   size 0.1 0.1 0.1
 }
 DEF GOAL Solid {
-  translation -0.41 0.45866 0.01
+  translation -0.46 -0.46134 0.01
   children [
     DEF BALL_SHAPE Shape {
       appearance PBRAppearance {
@@ -123,8 +123,8 @@ DEF ROBOT1 Robot {
         }
       ]
       endPoint DEF LEFT_WHEEL Solid {
-        translation 0.0001758971609674585 0.025076097683782154 0.0249799758645224
-        rotation 0.0001124109603591523 -0.9999997890781466 -0.000639693237628306 2.8373446142879906
+        translation 0.00017589716096745803 0.025076097683782154 0.0249799758645224
+        rotation 0.00011241096035915246 -0.9999997890781466 -0.0006396932376283061 2.8373446142879906
         children [
           DEF WHEEL Pose {
             rotation -1 0 0 1.57

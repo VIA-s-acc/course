@@ -19,6 +19,16 @@ class RRT:
         """
 
         def __init__(self, x, y):
+            """
+            Initializes an instance of the Node class.
+
+            Parameters:
+                x (float): The x-coordinate of the node.
+                y (float): The y-coordinate of the node.
+
+            Returns:
+                None
+            """
             self.x = x
             self.y = y
             self.path_x = []
@@ -28,6 +38,16 @@ class RRT:
     class AreaBounds:
 
         def __init__(self, area):
+            """
+            Initializes an instance of the AreaBounds class.
+
+            Parameters:
+                area (list): A list containing the minimum and maximum x and y values
+                            of the area.
+
+            Returns:
+                None
+            """
             self.xmin = float(area[0])
             self.xmax = float(area[1])
             self.ymin = float(area[2])
@@ -35,28 +55,33 @@ class RRT:
 
 
     def __init__(self,
-                 start,
-                 goal,
-                 obstacle_list,
-                 rand_area,
-                 expand_dis=3.0,
-                 path_resolution=0.5,
-                 goal_sample_rate=5,
-                 max_iter=500,
-                 play_area=None,
-                 robot_radius=0.0,
-                 ):
+                start,
+                goal,
+                obstacle_list,
+                rand_area,
+                expand_dis=3.0,
+                path_resolution=0.5,
+                goal_sample_rate=5,
+                max_iter=500,
+                play_area=None,
+                robot_radius=0.0,
+                ):
         """
-        Setting Parameter
+        Initializes an instance of the RRT class.
 
-        start:Start Position [x,y]
-        goal:Goal Position [x,y]
-        obstacleList:obstacle Positions [[x,y,size],...]
-        randArea:Random Sampling Area [min,max]
-        play_area:stay inside this area [xmin,xmax,ymin,ymax]
-        robot_radius: robot body modeled as circle with given radius
-
+        Parameters:
+            start (list): The starting position of the robot as a list of [x, y] coordinates.
+            goal (list): The goal position of the robot as a list of [x, y] coordinates.
+            obstacle_list (list): A list of obstacles represented as lists of [x, y, size] coordinates.
+            rand_area (list): A list containing the minimum and maximum values for random sampling.
+            expand_dis (float, optional): The distance to expand the nodes by. Defaults to 3.0.
+            path_resolution (float, optional): The resolution of the path. Defaults to 0.5.
+            goal_sample_rate (int, optional): The rate at which to sample the goal. Defaults to 5.
+            max_iter (int, optional): The maximum number of iterations. Defaults to 500.
+            play_area (list, optional): The boundaries of the play area as a list of [xmin, xmax, ymin, ymax]. Defaults to None.
+            robot_radius (float, optional): The radius of the robot. Defaults to 0.0.
         """
+        
         self.start = self.Node(start[0], start[1])
         self.end = self.Node(goal[0], goal[1])
         self.min_rand = rand_area[0]
@@ -75,16 +100,16 @@ class RRT:
 
     def planning(self, animation=True):
         """
-        Plans a path from the start node to the end node using the Rapidly-Exploring Random Trees (RRT) algorithm.
+        Plans a path from the start node to the end node using the RRT algorithm.
         
         Parameters:
-            animation (bool, optional): Whether to display an animation of the planning process. Defaults to True.
+            animation (bool): If True, the function will display an animation of the planning process. Default is True.
         
         Returns:
-            list: A list of nodes representing the planned path from the start node to the end node.
-            None: If no path could be found.
+            None: If no path is found.
+            list: A list of nodes representing the planned path.
         """
-
+        
         self.node_list = [self.start]
         for i in range(self.max_iter):
             rnd_node = self.get_random_node()

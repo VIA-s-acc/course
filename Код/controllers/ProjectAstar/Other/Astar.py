@@ -20,13 +20,15 @@ class AStarPlanner:
 
     def __init__(self, ox, oy, resolution, rr):
         """
-        Initialize grid map for a star planning
+        Initialize grid map for A* planning.
 
-        ox: x position list of Obstacles [m]
-        oy: y position list of Obstacles [m]
-        resolution: grid resolution [m]
-        rr: robot radius[m]
+        Parameters:
+            ox (list): x position list of obstacles [m].
+            oy (list): y position list of obstacles [m].
+            resolution (float): grid resolution [m].
+            rr (float): robot radius [m].
         """
+        
 
         self.resolution = resolution
         self.rr = rr
@@ -39,6 +41,18 @@ class AStarPlanner:
 
     class Node:
         def __init__(self, x, y, cost, parent_index):
+            """
+            Initialize a new instance of the Node class.
+
+            Args:
+                x (int): The index of the grid in the x-direction.
+                y (int): The index of the grid in the y-direction.
+                cost (float): The cost associated with the node.
+                parent_index (int): The index of the parent node.
+
+            Returns:
+                None
+            """
             self.x = x  # index of grid
             self.y = y  # index of grid
             self.cost = cost
@@ -50,18 +64,19 @@ class AStarPlanner:
 
     def planning(self, sx, sy, gx, gy):
         """
-        A star path search
-
-        input:
-            s_x: start x position [m]
-            s_y: start y position [m]
-            gx: goal x position [m]
-            gy: goal y position [m]
-
-        output:
-            rx: x position list of the final path
-            ry: y position list of the final path
+        A* path planning algorithm that finds the path from a start node to a goal node.
+        
+        Parameters:
+            sx (float): The x-coordinate of the start position.
+            sy (float): The y-coordinate of the start position.
+            gx (float): The x-coordinate of the goal position.
+            gy (float): The y-coordinate of the goal position.
+        
+        Returns:
+            rx (list): List of x-coordinates representing the planned path.
+            ry (list): List of y-coordinates representing the planned path.
         """
+       
 
         start_node = self.Node(self.calc_xy_index(sx, self.min_x),
                                self.calc_xy_index(sy, self.min_y), 0.0, -1)
@@ -132,6 +147,17 @@ class AStarPlanner:
         return rx, ry
 
     def calc_final_path(self, goal_node, closed_set):
+        """
+        A function that generates the final course based on the goal node and the closed set.
+
+        Parameters:
+            goal_node: The goal node to generate the final course towards.
+            closed_set: The set of nodes that have been visited during the planning process.
+        
+        Returns:
+            rx: A list of x-coordinates representing the final path.
+            ry: A list of y-coordinates representing the final path.
+        """
         # generate final course
         rx, ry = [self.calc_grid_position(goal_node.x, self.min_x)], [
             self.calc_grid_position(goal_node.y, self.min_y)]
@@ -146,28 +172,70 @@ class AStarPlanner:
 
     @staticmethod
     def calc_heuristic(n1, n2):
+        """
+        Calculate the heuristic distance between two nodes.
+
+        Parameters:
+            n1 (Node): The first node.
+            n2 (Node): The second node.
+
+        Returns:
+            float: The heuristic distance between the two nodes.
+        """
         w = 1.0  # weight of heuristic
         d = w * math.hypot(n1.x - n2.x, n1.y - n2.y)
         return d
 
     def calc_grid_position(self, index, min_position):
         """
-        calc grid position
+        Calculate the position on the grid given an index and the minimum position.
 
-        :param index:
-        :param min_position:
-        :return:
+        Parameters:
+            index (int): The index of the grid.
+            min_position (float): The minimum position on the grid.
+
+        Returns:
+            float: The position on the grid calculated by multiplying the index by the resolution and adding the minimum position.
         """
+        
         pos = index * self.resolution + min_position
         return pos
 
     def calc_xy_index(self, position, min_pos):
+        """
+        Calculate the index of a position on a grid given the minimum position and the resolution.
+
+        Parameters:
+            position (float): The position to calculate the index for.
+            min_pos (float): The minimum position on the grid.
+
+        Returns:
+            int: The index of the position on the grid.
+        """
         return round((position - min_pos) / self.resolution)
 
     def calc_grid_index(self, node):
+        """
+        Calculate the index of a grid cell based on the given node's position.
+
+        Parameters:
+            node (Node): The node whose position will be used to calculate the grid index.
+
+        Returns:
+            int: The index of the grid cell corresponding to the node's position.
+        """
         return (node.y - self.min_y) * self.x_width + (node.x - self.min_x)
 
     def verify_node(self, node):
+        """
+        Verify if the given node is within the grid boundaries and not colliding with any obstacles.
+
+        Parameters:
+            node (Node): The node to be verified.
+
+        Returns:
+            bool: True if the node is valid, False otherwise.
+        """
         px = self.calc_grid_position(node.x, self.min_x)
         py = self.calc_grid_position(node.y, self.min_y)
 
@@ -187,6 +255,16 @@ class AStarPlanner:
         return True
 
     def calc_obstacle_map(self, ox, oy):
+    	"""
+    	Calculate the obstacle map based on the given obstacle positions and resolution.
+    	
+    	Parameters:
+    	    ox (list): x positions of obstacles.
+    	    oy (list): y positions of obstacles.
+    	
+    	Returns:
+    	    None
+    	"""
 
         self.min_x = round(min(ox))
         self.min_y = round(min(oy))
@@ -217,6 +295,17 @@ class AStarPlanner:
 
     @staticmethod
     def get_motion_model():
+        """
+        Returns the motion model for the A* algorithm.
+
+        The motion model is a list of lists, where each inner list represents a motion.
+        Each motion is defined by three elements: dx, dy, and cost.
+        dx represents the change in x-coordinate, dy represents the change in y-coordinate,
+        and cost represents the cost of moving in that direction.
+
+        Returns:
+            motion (list): The motion model for the A* algorithm.
+        """
         # dx, dy, cost
         motion = [[1, 0, 1],
                   [0, 1, 1],
