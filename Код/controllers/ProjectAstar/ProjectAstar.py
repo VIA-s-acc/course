@@ -488,20 +488,7 @@ class Robot_Controller(Supervisor):
         
 
         directions = []
-        _, _, _, robot_theta = self.robot.getField("rotation").getSFRotation()
-        if robot_theta > 0:
-            while abs(robot_theta) > 0.075:
-                if self.step(32) == -1:
-                    break
-                self.emitter.send("H")
-                _, _, _, robot_theta = self.robot.getField("rotation").getSFRotation()
-        elif robot_theta < 0:
-            while abs(robot_theta) > 0.075:
-                if self.step(32) == -1:
-                    break
-                self.emitter.send("A")
-                _, _, _, robot_theta = self.robot.getField("rotation").getSFRotation()
-        
+
         for i in range(len(trajectory_x) - 1):
             dot1 = (trajectory_x[i], trajectory_y[i])
             dot2 = (trajectory_x[i+1], trajectory_y[i+1])
@@ -556,7 +543,8 @@ class Robot_Controller(Supervisor):
             
                 robot_pos_x, robot_pos_y, _ = self.robot.getField('translation').getSFVec3f()
                 _, _, z, robot_theta = self.robot.getField('rotation').getSFRotation()                   
-                print(math.sqrt(pow(robot_pos_x - goal_x, 2) + pow(robot_pos_y - goal_y, 2)))
+                print('1', (math.sqrt(pow(robot_pos_x - coords_x[counter], 2))))
+                print('2', (math.sqrt(pow(robot_pos_y - coords_y[counter], 2))))
                 if math.sqrt(pow(robot_pos_x - goal_x, 2) + pow(robot_pos_y - goal_y, 2)) < 0.065:
                     self.emitter.send("S")
                     print("DONE | Distance to goal: ", math.sqrt(pow(robot_pos_x - goal_x, 2) + pow(robot_pos_y - goal_y, 2)))
@@ -564,8 +552,8 @@ class Robot_Controller(Supervisor):
                 if (want_turn == False):    
                     # print(math.sqrt(pow(robot_pos_y - coords_y[counter], 2)))
                     # print(math.sqrt(pow(robot_pos_x - coords_x[counter], 2)))
-                    if (math.sqrt(pow(robot_pos_x - coords_x[counter], 2)) < 0.007) and \
-                        (math.sqrt(pow(robot_pos_y - coords_y[counter], 2)) < 0.007):  
+                    if (math.sqrt(pow(robot_pos_x - coords_x[counter], 2)) < 0.008) and \
+                        (math.sqrt(pow(robot_pos_y - coords_y[counter], 2)) < 0.008):  
                         # print('1')    
                         want_turn = True
                         order = 'S' 
