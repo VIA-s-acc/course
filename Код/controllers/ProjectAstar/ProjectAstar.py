@@ -55,25 +55,6 @@ class Enumerate(object):
             setattr(self, name, number)
 
 
-class Cell:
-
-    coord_x = 1
-    coord_y = 1
-    coord_x_parrent = 1
-    coord_y_parrent = 1
-    value_func_h = 0
-    value_func_g = 0
-    value_func_f = 0
-
-    def __init__(self, cx, cy, cxp, cyp, g, h, f):
-        self.coord_x = cx
-        self.coord_y = cy
-        self.coord_x_parrent = cxp
-        self.coord_y_parrent = cyp
-        self.value_func_h = h
-        self.value_func_g = g
-        self.value_func_f = f
-
 
 class Robot_Controller(Supervisor):
 

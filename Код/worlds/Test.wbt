@@ -67,7 +67,7 @@ DEF BOX8 CardboardBox {
   size 0.1 0.1 0.1
 }
 DEF GOAL Solid {
-  translation -0.46 -0.46134 0.01
+  translation 0.4 0.01866 0.01
   children [
     DEF BALL_SHAPE Shape {
       appearance PBRAppearance {
