@@ -49,6 +49,7 @@ class Controller(Robot):
         self.motors[1].setPosition(float("inf"))
         self.motors[0].setVelocity(0.0)
         self.motors[1].setVelocity(0.0)
+        # print("Motors:", self.motors, "\nReceiver:", self.receiver)
         # for dsnumber in range(0, 2):
         #     self.distanceSensors.append(self.getDevice('ds' + str(dsnumber)))
         #     self.distanceSensors[-1].enable(self.timeStep)
@@ -62,9 +63,9 @@ class Controller(Robot):
                 
                 if message == 'F':
                     self.mode = self.Mode.MOVE_FORWARD
-                elif message == 'A':
+                elif message == 'CC':
                     self.mode = self.Mode.INV_CLOCK_
-                elif message == 'H':
+                elif message == 'C':
                     self.mode = self.Mode.CLOCK
                 elif message == 'S':
                     self.mode = self.Mode.STOP

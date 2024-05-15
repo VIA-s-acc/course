@@ -3,6 +3,8 @@ import matplotlib.pyplot as plt
 import math, sys, struct
 from Other.RRT import RRT
 from Other.Astar import AStarPlanner
+import numpy as np
+
 
 global show_animation
 show_animation = True
@@ -14,9 +16,9 @@ def shortest_rotation(current_angle, target_angle):
     diff = (target_angle - current_angle + 2 * math.pi) % (2 * math.pi)
     
     if diff <= math.pi:
-        return "A"
+        return "CC"
     else:
-        return "H"
+        return "C"
 # алгоритм брезенхэма
 def fill_matrix_between_points(matrix, i_start, j_start, i_end, j_end):
     n = len(matrix)
@@ -65,9 +67,9 @@ class Robot_Controller(Supervisor):
             self.multiply = 4
         if self.algorithm == "Astar":
             self.multiply = 4
+        self.num_of_boxes = 4
         self.robot = self.getFromDef("Epuck")
         self.emitter = self.getDevice("emitter")
-        self.num_of_boxes = 4
         self.Arena = self.getFromDef("RArena")
         self.Box1 = self.getFromDef("BOX1")
         self.Box2 = self.getFromDef("BOX2")
@@ -83,7 +85,6 @@ class Robot_Controller(Supervisor):
         self.CellSize = self.Arena.getField("floorTileSize").getSFVec2f() 
         self.CellSize[0], self.CellSize[1] = self.CellSize[0] / self.multiply, self.CellSize[1] / self.multiply 
         self.Cells_Per_Arena = int((self.ArenaSize[0] / self.CellSize[0]) * 2)
-
         self.Grid = [[0] * self.Cells_Per_Arena for i in range(self.Cells_Per_Arena)]
         robot_x, robot_y, _ = self.robot.getField("translation").getSFVec3f()
         goal_x, goal_y, _ = self.Goal.getField("translation").getSFVec3f()
@@ -95,6 +96,8 @@ class Robot_Controller(Supervisor):
         self.Goal_cells = int(
             math.floor((goal_x * self.Cells_Per_Arena) + (self.Cells_Per_Arena / 2))
         ), int(math.floor((goal_y * self.Cells_Per_Arena) + (self.Cells_Per_Arena / 2)))
+        # print("Area Size:", self.ArenaSize, "\nCell Size:", self.CellSize, '\nRobot and Goal cells:', self.Robot_cells, self.Goal_cells, '\nGrid Size:' + str(self.Cells_Per_Arena) + 'x' + str(self.Cells_Per_Arena), "\nEmitter:", self.emitter, "\nRobot:", self.robot, '\nGrid:\n', np.array(self.Grid))
+
         box1_x, box1_y, _ = self.Box1.getField("translation").getSFVec3f()
         box2_x, box2_y, _ = self.Box2.getField("translation").getSFVec3f()
         box3_x, box3_y, _ = self.Box3.getField("translation").getSFVec3f()
@@ -307,6 +310,15 @@ class Robot_Controller(Supervisor):
         self.Grid[self.Goal_cells[0]][self.Goal_cells[1]] = 4  
         Boxes_x = []
         Boxes_y = []
+        # print("Grid after filling:\n")
+        # max_length = max(len(str(num)) for row in self.Grid for num in row)
+        # for row in self.Grid:
+        #     for num in row:
+        #         if num == -1:
+        #             print('\033[91m' + str(num).rjust(max_length) + '\033[0m', end=" ")
+        #         else:
+        #             print(str(num).rjust(max_length), end=" ")
+        #     print()
 
         for row in range(len(self.Grid)):
             for col in range(len(self.Grid[0])):
@@ -356,8 +368,8 @@ class Robot_Controller(Supervisor):
             rx, ry = a_star.planning(sx, sy, gx, gy)
             rx.reverse()
             ry.reverse()
-            print(rx)
-            print(ry)
+            print("Trajectory_i: ",rx)
+            print("Trajectory_j: ",ry)
             for index in range(1, len(rx)):
                 trajectory.append(math.ceil(rx[index]))
                 trajectory.append(math.ceil(ry[index]))
