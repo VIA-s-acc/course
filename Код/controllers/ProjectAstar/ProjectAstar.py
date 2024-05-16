@@ -2,12 +2,12 @@ from controller import Robot, Supervisor, Node, Field
 import matplotlib.pyplot as plt
 import math, sys, struct
 from Other.RRT import RRT
-from Other.Astar import AStarPlanner
+from Other.Astar import AStarPlanner, set_animation
 import numpy as np
-
-
 global show_animation
-show_animation = True
+show_animation = False
+set_animation(False)
+
 def shortest_rotation(current_angle, target_angle):
     # Нормализация углов к диапазону [0, 2*pi)
     current_angle = current_angle % (2 * math.pi)
@@ -365,7 +365,15 @@ class Robot_Controller(Supervisor):
                 plt.grid(True)
                 plt.axis("equal")
             trajectory = []
-            rx, ry = a_star.planning(sx, sy, gx, gy)
+            time_table = []
+            import time
+            for i in range(0, 100):
+                curr_time = time.time()
+                rx, ry = a_star.planning(sx, sy, gx, gy)
+                time_table.append(time.time() - curr_time)
+            print("max time: ", max(time_table))
+            print("min time: ", min(time_table))
+            print("avg time: ", sum(time_table) / len(time_table))
             rx.reverse()
             ry.reverse()
             print("Trajectory_i: ",rx)
@@ -387,6 +395,10 @@ class Robot_Controller(Supervisor):
                 mult = 2 ** (self.multiply+2) * 1.4
             elif self.multiply == 8:
                 mult = 2 ** (self.multiply) * 1.25
+            import time
+            # time_table = []
+ 
+            # curr_time = time.time()
             rrt = RRT(
                 start = [self.Robot_cells[0], self.Robot_cells[1]],
                 goal = [self.Goal_cells[0], self.Goal_cells[1]],
@@ -398,6 +410,10 @@ class Robot_Controller(Supervisor):
                 max_iter = 500
             )
             path = rrt.planning(animation=show_animation)
+            #     time_table.append(time.time() - curr_time)
+            # print("Time max in first 100 trials: ", max(time_table))
+            # print("Time min in first 100 trials: ", min(time_table))
+            # print("Time avg in first 100 trials: ", sum(time_table)/len(time_table))
             if show_animation:
                 rrt.draw_graph()
                 plt.plot([x for (x, y) in path], [y for (x, y) in path], '-r')
@@ -448,7 +464,8 @@ class Robot_Controller(Supervisor):
             
         for i,k,l,b,x in zip(coords_x,coords_y, trajectory_x, trajectory_y, directions):
             print((i,k), (l,b), (x))
-
+        dist = 0
+        robot_prev_post = self.robot.getField('translation').getSFVec3f()[:2]
         counter = 0
         want_turn = False
         while True:
@@ -459,11 +476,55 @@ class Robot_Controller(Supervisor):
             if counter < len(coords_x):      
             
                 robot_pos_x, robot_pos_y, _ = self.robot.getField('translation').getSFVec3f()
+                dist += math.sqrt(pow(robot_pos_x - robot_prev_post[0], 2) + pow(robot_pos_y - robot_prev_post[1], 2))
+                robot_prev_post = robot_pos_x, robot_pos_y
                 _, _, z, robot_theta = self.robot.getField('rotation').getSFRotation()                   
                 
                 if math.sqrt(pow(robot_pos_x - goal_x, 2) + pow(robot_pos_y - goal_y, 2)) < 0.065:
                     self.emitter.send("S")
                     print("DONE | Distance to goal: ", math.sqrt(pow(robot_pos_x - goal_x, 2) + pow(robot_pos_y - goal_y, 2)))
+                    print("DONE | Distance travelled: ", dist)
+                    import json
+                    import os 
+                    # if self.algorithm == "RRT":
+                    #     if os.path.exists('RRT.json'):
+                    #         distance_dict = json.load(open('RRT.json'))
+                    #         distance_dict[dist] = dist
+                    #         print(len(distance_dict))
+                    #         first_10 = []
+                    #         fisrt_25 = []
+                    #         first_50  = []
+                    #         first_100 = []
+                    #         for enum, item in enumerate(distance_dict):
+                    #             print(item)
+                    #             if enum < 10:
+                    #                 first_10.append(float(item))
+                    #             if enum < 25:
+                    #                 fisrt_25.append(float(item))
+                    #             if enum < 50:
+                    #                 first_50.append(float(item))
+                    #             if enum < 100:
+                    #                 first_100.append(float(item))
+                    #         print("max 10: ", max(first_10))
+                    #         print("max 25: ", max(fisrt_25))
+                    #         print("max 50: ", max(first_50))
+                    #         print("max 100: ", max(first_100))
+                    #         print("min 10: ", min(first_10))
+                    #         print("min 25: ", min(fisrt_25))
+                    #         print("min 50: ", min(first_50))
+                    #         print("min 100: ", min(first_100))
+                    #         print("mean 10: ", sum(first_10) / len(first_10))
+                    #         print("mean 25: ", sum(fisrt_25) / len(fisrt_25))
+                    #         print("mean 50: ", sum(first_50) / len(first_50))
+                    #         print("mean 100: ", sum(first_100) / len(first_100))
+
+                            # with open('RRT.json', 'w') as f:
+                            #     json.dump(distance_dict, f)
+                        # else:
+                        #     distance_dict = {dist: dist}
+                        #     with open('RRT.json', 'w') as f:
+                        #         json.dump(distance_dict, f)
+                                                
                     break
                 if (want_turn == False):    
               

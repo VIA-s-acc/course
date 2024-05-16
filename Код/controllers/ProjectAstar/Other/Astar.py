@@ -5,7 +5,7 @@ import math
 import matplotlib.pyplot as plt
 
 show_animation = True
-
+def set_animation(flag): global show_animation; show_animation = flag
 
 class AStarPlanner:
 
