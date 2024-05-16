@@ -2,11 +2,11 @@ from controller import Robot, Supervisor, Node, Field
 import matplotlib.pyplot as plt
 import math, sys, struct
 from Other.RRT import RRT
-from Other.Astar import AStarPlanner, set_animation
+from Other.Astar import AStarPlanner
 import numpy as np
-global show_animation
-show_animation = False
-set_animation(False)
+from Other.config import show_animation as anim_flag
+
+show_animation = anim_flag
 
 def shortest_rotation(current_angle, target_angle):
     # Нормализация углов к диапазону [0, 2*pi)
@@ -365,15 +365,10 @@ class Robot_Controller(Supervisor):
                 plt.grid(True)
                 plt.axis("equal")
             trajectory = []
-            time_table = []
-            import time
-            for i in range(0, 100):
-                curr_time = time.time()
-                rx, ry = a_star.planning(sx, sy, gx, gy)
-                time_table.append(time.time() - curr_time)
-            print("max time: ", max(time_table))
-            print("min time: ", min(time_table))
-            print("avg time: ", sum(time_table) / len(time_table))
+
+
+            rx, ry = a_star.planning(sx, sy, gx, gy)
+
             rx.reverse()
             ry.reverse()
             print("Trajectory_i: ",rx)
@@ -395,10 +390,8 @@ class Robot_Controller(Supervisor):
                 mult = 2 ** (self.multiply+2) * 1.4
             elif self.multiply == 8:
                 mult = 2 ** (self.multiply) * 1.25
-            import time
-            # time_table = []
- 
-            # curr_time = time.time()
+
+   
             rrt = RRT(
                 start = [self.Robot_cells[0], self.Robot_cells[1]],
                 goal = [self.Goal_cells[0], self.Goal_cells[1]],
@@ -410,10 +403,7 @@ class Robot_Controller(Supervisor):
                 max_iter = 500
             )
             path = rrt.planning(animation=show_animation)
-            #     time_table.append(time.time() - curr_time)
-            # print("Time max in first 100 trials: ", max(time_table))
-            # print("Time min in first 100 trials: ", min(time_table))
-            # print("Time avg in first 100 trials: ", sum(time_table)/len(time_table))
+
             if show_animation:
                 rrt.draw_graph()
                 plt.plot([x for (x, y) in path], [y for (x, y) in path], '-r')
@@ -562,4 +552,4 @@ class Robot_Controller(Supervisor):
                 self.emitter.send(order)
            
    
-controller = Robot_Controller("Astar")
+controller = Robot_Controller("RRT")

@@ -5,7 +5,9 @@ import random
 import matplotlib.pyplot as plt
 import numpy as np
 
-show_animation = True
+from .config import show_animation as anim_flag
+
+show_animation = anim_flag
 
 
 class RRT:

@@ -3,10 +3,9 @@
 import math
 
 import matplotlib.pyplot as plt
+from .config import show_animation as anim_flag
 
-show_animation = True
-def set_animation(flag): global show_animation; show_animation = flag
-
+show_animation = anim_flag
 class AStarPlanner:
 
     def __init__(self, ox, oy, resolution, rr):
