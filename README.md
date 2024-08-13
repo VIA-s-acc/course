@@ -9,10 +9,10 @@
 
 #### Other
 
-Dstar grid $~~~~~~~~~~~~~~$ Djikstra grid $~~~~~~~~~~~~$ Astar grid $~~~~~~~~~~~~~~$ RRT grid
+Dstar grid &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Djikstra grid &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Astar grid &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; RRT grid
 
 [<img src="Animations/DstarGrid.gif" width="100" height = "150"/>](Animations/FinalDstar.gif)
-$~~~~~~$[<img src="Animations/DjikstraGrid.gif" width="100" height = "150"/>](Animations/FinalDjikstra.gif)
-$~~~~~~$[<img src="Animations/AstarGrid.gif" width="100" height = "150"/>](Animations/FinalAstar.gif)
-$~~~~~~$[<img src="Animations/RRTGrid.gif" width="100" height = "150"/>](Animations/FinalRRT.gif)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[<img src="Animations/DjikstraGrid.gif" width="100" height = "150"/>](Animations/FinalDjikstra.gif)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[<img src="Animations/AstarGrid.gif" width="100" height = "150"/>](Animations/FinalAstar.gif)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[<img src="Animations/RRTGrid.gif" width="100" height = "150"/>](Animations/FinalRRT.gif)
     
